@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function Dashboard() {
+  // eslint-disable-next-line no-unused-vars
   const { isLoading, isAuthenticated, logout, user } = useAuth0();
   const navigate = useNavigate();
   const tasks = [
@@ -120,7 +121,18 @@ function Dashboard() {
                 JSON.parse(window.sessionStorage.getItem("user"))?.email}
             </h2>
           </div>
-          <h3 className="text-0.5xl font-bold mb-4">User Tasks</h3>
+          <h3 className="flex justify-between text-0.5xl font-bold mb-4">
+            User Tasks{" "}
+            <button
+              className="flex justify-center w-20 px-4 py-1 m-2 text-blue-600 transparent rounded focus:outline-none"
+              onClick={() =>
+                // logout({ logoutParams: { returnTo: window.location.origin } })
+                navigate("/create-todo")
+              }
+            >
+              create
+            </button>
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {tasks.map((task) => (
               <div key={task.id} className="border rounded p-4">
