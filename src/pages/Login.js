@@ -11,7 +11,6 @@ function Login() {
   const [passVisibility, setPassVisibility] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState({ email: "", password: "" });
   const { loginWithRedirect } = useAuth0();
 
   const loginUser = (email, password) => {
@@ -20,8 +19,10 @@ function Login() {
     }
     setLoading(true);
     try {
-      setUserDetails({ email, password });
-      window.sessionStorage.setItem("user", JSON.stringify(userDetails));
+      window.sessionStorage.setItem(
+        "user",
+        JSON.stringify({ email, password })
+      );
       setLoading(false);
       toast.success("Login Successful");
       return navigate("/");
@@ -88,7 +89,7 @@ function Login() {
           <button
             disabled={loading}
             onClick={() =>
-              loginUser(emailRef.current.value, passwordRef.current.value)
+              loginUser(emailRef.current["value"], passwordRef.current["value"])
             }
             className="w-full px-4 py-1 mb-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none"
           >
