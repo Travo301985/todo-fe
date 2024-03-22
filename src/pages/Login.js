@@ -4,6 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useAuth0 } from "@auth0/auth0-react";
 import { toast, ToastContainer } from "react-toastify";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { BASE_URL } from "../constants/base";
 
 function Login() {
   const emailRef = useRef();
@@ -12,23 +15,32 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { loginWithRedirect } = useAuth0();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    (newUser) => axios.post(`${BASE_URL}/login`, newUser),
+    {
+      onSuccess: () => {
+        setLoading(false);
+        toast.success("Registration Successful");
+        queryClient.invalidateQueries("users");
+        return navigate("/");
+      },
+      onError: (error) => {
+        setLoading(false);
+        toast.error(error);
+      },
+    }
+  );
 
   const loginUser = (email, password) => {
     if (!email || !password) {
       return toast.error("Please fill in all the fields");
     }
-    setLoading(true);
-    try {
-      window.sessionStorage.setItem(
-        "user",
-        JSON.stringify({ email, password })
-      );
-      setLoading(false);
-      toast.success("Login Successful");
-      return navigate("/");
-    } catch (error) {
-      return toast.error(error.message);
-    }
+    mutation.mutate({
+      email: email,
+      password: password,
+    });
   };
 
   useEffect(() => {

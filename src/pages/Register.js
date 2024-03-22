@@ -4,6 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useAuth0 } from "@auth0/auth0-react";
 import { toast, ToastContainer } from "react-toastify";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { BASE_URL } from "../constants/base";
 
 function Register() {
   const nameRef = useRef();
@@ -13,19 +16,33 @@ function Register() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { loginWithRedirect } = useAuth0();
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    (newUser) => axios.post(`${BASE_URL}/users`, newUser),
+    {
+      onSuccess: () => {
+        setLoading(false);
+        toast.success("Registration Successful");
+        queryClient.invalidateQueries("users");
+        return navigate("/login");
+      },
+      onError: (error) => {
+        setLoading(false);
+        toast.error(error);
+      },
+    }
+  );
 
   const registerUser = (name, email, password) => {
     if (!name || !email || !password) {
       return toast.error("Please fill in all the fields");
     }
-    setLoading(true);
-    try {
-      setLoading(false);
-      toast.success("Registration Successful");
-      return navigate("/login");
-    } catch (error) {
-      return toast.error(error.message);
-    }
+    mutation.mutate({
+      username: name,
+      email: email,
+      password: password,
+    });
   };
 
   useEffect(() => {
@@ -85,7 +102,11 @@ function Register() {
           <button
             disabled={loading}
             onClick={() =>
-              registerUser(nameRef.current.value, emailRef.current.value, passwordRef.current.value)
+              registerUser(
+                nameRef.current.value,
+                emailRef.current.value,
+                passwordRef.current.value
+              )
             }
             className="w-full px-4 py-1 mb-2 mt-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none"
           >
