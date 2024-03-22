@@ -1,13 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { toast, ToastContainer } from "react-toastify";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import { BASE_URL } from "../constants/base";
 
 function Todo() {
   // eslint-disable-next-line no-unused-vars
   const { isLoading, isAuthenticated, logout, user } = useAuth0();
+  const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const navigate = useNavigate();
-  const task = {
+  const queryClient = useQueryClient();
+  const titleRef = useRef("");
+  const descriptionRef = useRef("");
+  const dueDateRef = useRef("");
+  const completeRef = useRef("");
+
+  const [task, setTask] = useState({
     id: 1,
     userId: 1,
     title: "Deploy a website",
@@ -15,7 +26,7 @@ function Todo() {
     complete: false,
     dueDate: "2024-03-30",
     createdDate: "2024-03-20",
-  };
+  });
 
   function getStatusClass(complete, dueDate) {
     const status = getStatus(complete, dueDate);
@@ -45,8 +56,37 @@ function Todo() {
     }
   }
 
+  const mutation = useMutation(
+    (updated) => axios.put(`${BASE_URL}/tasks/${task.id}`, updated),
+    {
+      onSuccess: (data) => {
+        toast.success("Task updated successfully");
+        queryClient.invalidateQueries("tasks");
+        setEdit(false);
+        setTask(data?.data);
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+
+  const updateTask = (title, description, dueDate, complete) => {
+    if (!title || !description || !dueDate) {
+      toast.error("Please fill in all the fields");
+      return;
+    }
+    mutation.mutate({
+      title,
+      dueDate,
+      description,
+      complete: complete ? true : false,
+    });
+  };
+
   useEffect(() => {
     setEdit(false);
+    setLoading(false);
 
     return () => {};
   }, []);
@@ -137,6 +177,7 @@ function Todo() {
                   type="text"
                   name="title"
                   defaultValue={task?.title}
+                  ref={titleRef}
                 />
 
                 <label className="block">Description</label>
@@ -146,6 +187,7 @@ function Todo() {
                   type="text"
                   name="description"
                   defaultValue={task?.description}
+                  ref={descriptionRef}
                 ></textarea>
 
                 <label className="block">Due Date</label>
@@ -155,6 +197,7 @@ function Todo() {
                   type="date"
                   name="due"
                   defaultChecked={task?.dueDate}
+                  ref={dueDateRef}
                 />
 
                 <div className="mb-2 flex justify-between align-center">
@@ -163,10 +206,19 @@ function Todo() {
                     type="checkbox"
                     name="complete"
                     defaultValue={task?.complete}
+                    ref={completeRef}
                   />
                 </div>
                 <button
-                  onClick={() => setEdit(true)}
+                  disabled={loading}
+                  onClick={() =>
+                    updateTask(
+                      titleRef.current["value"],
+                      descriptionRef.current["value"],
+                      dueDateRef.current["value"],
+                      completeRef.current["value"]
+                    )
+                  }
                   className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
                 >
                   Save
@@ -177,6 +229,17 @@ function Todo() {
         </div>
       </div>
       {/* )} */}
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

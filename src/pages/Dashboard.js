@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import { toast, ToastContainer } from "react-toastify";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
+import RiseLoader from "react-spinners/RiseLoader";
+import { BASE_URL } from "../constants/base";
 
 function Dashboard() {
   // eslint-disable-next-line no-unused-vars
   const { isLoading, isAuthenticated, logout, user } = useAuth0();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const tasks = [
+  const [tasks, setTasks] = useState([
     {
       id: 1,
       userId: 1,
@@ -52,7 +58,34 @@ function Dashboard() {
       dueDate: "2024-03-28",
       createdDate: "2024-03-19",
     },
-  ];
+  ]);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    (email) => axios.get(`${BASE_URL}/tasks/${email}`),
+    {
+      onMutate: () => {
+        setLoading(true);
+        return () => {
+          setLoading(false);
+        };
+      },
+      onSuccess: (data) => {
+        setTasks(data?.data);
+        queryClient.invalidateQueries("tasks");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    }
+  );
+
+  const fetchUserTodos = (email) => {
+    if (!email) {
+      return navigate("/login");
+    }
+    mutation.mutate(email);
+  };
 
   function getStatusClass(complete, dueDate) {
     const status = getStatus(complete, dueDate);
@@ -81,6 +114,12 @@ function Dashboard() {
       return "TODO";
     }
   }
+
+  useEffect(() => {
+    fetchUserTodos(JSON.parse(window.sessionStorage.getItem("user"))?.email);
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -133,34 +172,54 @@ function Dashboard() {
               create
             </button>
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {tasks.map((task) => (
-              <div key={task.id} className="border rounded p-4">
-                <h2 className="text-xl font-bold mb-2">{task.title}</h2>
-                <hr className="mb-3" />
-                <p className="mb-2">{task.description}</p>
-                <p className={"mb-2"}>
-                  Status:{" "}
-                  <span
-                    className={`${getStatusClass(task.complete, task.dueDate)}`}
+          {!loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {tasks.map((task) => (
+                <div key={task.id} className="border rounded p-4">
+                  <h2 className="text-xl font-bold mb-2">{task.title}</h2>
+                  <hr className="mb-3" />
+                  <p className="mb-2">{task.description}</p>
+                  <p className={"mb-2"}>
+                    Status:{" "}
+                    <span
+                      className={`${getStatusClass(
+                        task.complete,
+                        task.dueDate
+                      )}`}
+                    >
+                      {getStatus(task.complete, task.dueDate)}
+                    </span>
+                  </p>
+                  <p className="mb-2">Due Date: {task.dueDate}</p>
+                  <p className="mb-2">Created Date: {task.createdDate}</p>
+                  <button
+                    onClick={() => navigate(`/todo/${task.id}`)}
+                    className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
                   >
-                    {getStatus(task.complete, task.dueDate)}
-                  </span>
-                </p>
-                <p className="mb-2">Due Date: {task.dueDate}</p>
-                <p className="mb-2">Created Date: {task.createdDate}</p>
-                <button
-                  onClick={() => navigate(`/todo/${task.id}`)}
-                  className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
-                >
-                  View Details
-                </button>
-              </div>
-            ))}
-          </div>
+                    View Details
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div>
+              <RiseLoader color={"rgba(160, 160, 160, 0.5)"} size={8} />
+            </div>
+          )}
         </div>
       </div>
       {/* )} */}
+      <ToastContainer
+        position="bottom-left"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }
