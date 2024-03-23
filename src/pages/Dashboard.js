@@ -4,6 +4,7 @@ import RiseLoader from "react-spinners/RiseLoader";
 import { ActionsContext } from "../context/ActionsContext";
 import { withAccessHandler } from "../hocs/_withAuthHandler";
 import Navbar from "../constants/Navbar";
+import TaskCard from "../constants/TaskCard";
 
 function Dashboard() {
   // eslint-disable-next-line no-unused-vars
@@ -13,10 +14,8 @@ function Dashboard() {
     tasks,
     loading,
     navigate,
-    getStatus,
     setLoading,
     fetchUserTodos,
-    getStatusClass,
   } = useContext(ActionsContext);
 
   useEffect(() => {
@@ -54,42 +53,16 @@ function Dashboard() {
           <h3 className="flex justify-between text-0.5xl font-bold mb-4">
             User Tasks{" "}
             <button
-              className="flex justify-center w-20 px-4 py-1 m-2 text-blue-600 transparent rounded focus:outline-none"
-              onClick={() =>
-                // logout({ logoutParams: { returnTo: window.location.origin } })
-                navigate("/create-todo")
-              }
+              className="flex justify-center font-medium tracking-wider w-20 px-4 py-1 m-2 text-blue-600 transparent rounded focus:outline-none"
+              onClick={() => navigate("/create-todo")}
             >
               create
             </button>
           </h3>
           {!loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {tasks.map((task) => (
-                <div key={task.id} className="border rounded p-4">
-                  <h2 className="text-xl font-bold mb-2">{task.title}</h2>
-                  <hr className="mb-3" />
-                  <p className="mb-2">{task.description}</p>
-                  <p className={"mb-2"}>
-                    Status:{" "}
-                    <span
-                      className={`${getStatusClass(
-                        task.complete,
-                        task.dueDate
-                      )}`}
-                    >
-                      {getStatus(task.complete, task.dueDate)}
-                    </span>
-                  </p>
-                  <p className="mb-2">Due Date: {task.dueDate}</p>
-                  <p className="mb-2">Created Date: {task.createdDate}</p>
-                  <button
-                    onClick={() => navigate(`/todo/${task.id}`)}
-                    className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
-                  >
-                    View Details
-                  </button>
-                </div>
+              {tasks.map((task, index) => (
+                <TaskCard key={index} task={task} />
               ))}
             </div>
           ) : (

@@ -218,11 +218,11 @@ export const ActionsContextProvider = ({ children }) => {
     const status = getStatus(complete, dueDate);
     switch (status) {
       case "COMPLETED":
-        return "text-green-500";
+        return "text-green-500 text-xs font-medium tracking-medium";
       case "IN_PROGRESS":
-        return "text-yellow-500";
+        return "text-orange-600 text-xs font-medium tracking-medium";
       case "TODO":
-        return "text-red-500";
+        return "text-red-500 text-xs font-medium tracking-medium";
       default:
         return "";
     }
