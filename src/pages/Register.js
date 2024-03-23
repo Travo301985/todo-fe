@@ -1,55 +1,25 @@
 import { BeatLoader } from "react-spinners";
-import { useNavigate } from "react-router-dom";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useAuth0 } from "@auth0/auth0-react";
-import { toast, ToastContainer } from "react-toastify";
-import { useMutation, useQueryClient } from "react-query";
-import axios from "axios";
-import { BASE_URL } from "../constants/base";
+import { ActionsContext } from "../context/ActionsContext";
 
 function Register() {
+  const [passVisibility, setPassVisibility] = useState(false);
+
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
-  const [passVisibility, setPassVisibility] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+
   const { loginWithRedirect } = useAuth0();
-  const queryClient = useQueryClient();
 
-  const mutation = useMutation(
-    (newUser) => axios.post(`${BASE_URL}/users`, newUser),
-    {
-      onSuccess: () => {
-        setLoading(false);
-        toast.success("Registration Successful");
-        queryClient.invalidateQueries("users");
-        return navigate("/login");
-      },
-      onError: (error) => {
-        setLoading(false);
-        toast.error(error);
-      },
-    }
-  );
-
-  const registerUser = (name, email, password) => {
-    if (!name || !email || !password) {
-      return toast.error("Please fill in all the fields");
-    }
-    mutation.mutate({
-      username: name,
-      email: email,
-      password: password,
-    });
-  };
+  const { loading, setLoading, registerUser } = useContext(ActionsContext);
 
   useEffect(() => {
-    window.sessionStorage.removeItem("user");
     if (loading) {
       setLoading(false);
     }
+    window.sessionStorage.removeItem("user");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -121,17 +91,6 @@ function Register() {
           </button>
         </div>
       </form>
-      <ToastContainer
-        position="bottom-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </div>
   );
 }

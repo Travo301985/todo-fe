@@ -1,128 +1,35 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { toast, ToastContainer } from "react-toastify";
-import { useMutation, useQueryClient } from "react-query";
-import axios from "axios";
 import RiseLoader from "react-spinners/RiseLoader";
-import { BASE_URL } from "../constants/base";
+import { ActionsContext } from "../context/ActionsContext";
 
 function Dashboard() {
   // eslint-disable-next-line no-unused-vars
   const { isLoading, isAuthenticated, logout, user } = useAuth0();
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      userId: 1,
-      title: "Deploy a website",
-      description: "Deploy a website on a server, AWS, or Netlify.",
-      complete: false,
-      dueDate: "2024-03-30",
-      createdDate: "2024-03-20",
-    },
-    {
-      id: 2,
-      userId: 1,
-      title: "Test a website",
-      description: "Test a website on different devices",
-      complete: true,
-      dueDate: "2024-04-05",
-      createdDate: "2024-03-22",
-    },
-    {
-      id: 3,
-      userId: 2,
-      title: "Design a website",
-      description: "Design a website using Figma or Adobe XD",
-      complete: null,
-      dueDate: "2024-03-25",
-      createdDate: "2024-03-18",
-    },
-    {
-      id: 4,
-      userId: 3,
-      title: "Mobile App Development",
-      description: "Develop a mobile app using React Native or Flutter",
-      complete: false,
-      dueDate: "2024-04-10",
-      createdDate: "2024-03-24",
-    },
-    {
-      id: 5,
-      userId: 2,
-      title: "Web App Development",
-      description: "App Development using React or Angular",
-      complete: false,
-      dueDate: "2024-03-28",
-      createdDate: "2024-03-19",
-    },
-  ]);
-  const queryClient = useQueryClient();
 
-  const mutation = useMutation(
-    (email) => axios.get(`${BASE_URL}/tasks/${email}`),
-    {
-      onMutate: () => {
-        setLoading(true);
-        return () => {
-          setLoading(false);
-        };
-      },
-      onSuccess: (data) => {
-        setTasks(data?.data);
-        queryClient.invalidateQueries("tasks");
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    }
-  );
-
-  const fetchUserTodos = (email) => {
-    if (!email) {
-      return navigate("/login");
-    }
-    mutation.mutate(email);
-  };
-
-  function getStatusClass(complete, dueDate) {
-    const status = getStatus(complete, dueDate);
-    switch (status) {
-      case "COMPLETED":
-        return "text-green-500";
-      case "IN_PROGRESS":
-        return "text-yellow-500";
-      case "TODO":
-        return "text-red-500";
-      default:
-        return "";
-    }
-  }
-
-  function getStatus(complete, dueDate) {
-    if (complete === true) {
-      return "COMPLETED";
-    } else if (complete === false) {
-      if (new Date(dueDate) > new Date()) {
-        return "IN_PROGRESS";
-      } else {
-        return "TODO";
-      }
-    } else {
-      return "TODO";
-    }
-  }
+  const {
+    tasks,
+    loading,
+    navigate,
+    getStatus,
+    setLoading,
+    fetchUserTodos,
+    getStatusClass,
+  } = useContext(ActionsContext);
 
   useEffect(() => {
+    if (loading) setLoading(false);
     fetchUserTodos(JSON.parse(window.sessionStorage.getItem("user"))?.email);
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-between mt-30">
+        <RiseLoader color={"rgba(160, 160, 160, 0.5)"} size={8} />
+      </div>
+    );
   }
 
   return (
@@ -202,24 +109,13 @@ function Dashboard() {
               ))}
             </div>
           ) : (
-            <div>
+            <div className="flex justify-between mt-30">
               <RiseLoader color={"rgba(160, 160, 160, 0.5)"} size={8} />
             </div>
           )}
         </div>
       </div>
       {/* )} */}
-      <ToastContainer
-        position="bottom-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </div>
   );
 }

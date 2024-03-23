@@ -1,98 +1,42 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useEffect, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { toast, ToastContainer } from "react-toastify";
-import { useMutation, useQueryClient } from "react-query";
-import axios from "axios";
-import { BASE_URL } from "../constants/base";
+import { ActionsContext } from "../context/ActionsContext";
+import RiseLoader from "react-spinners/RiseLoader";
 
 function Todo() {
   // eslint-disable-next-line no-unused-vars
   const { isLoading, isAuthenticated, logout, user } = useAuth0();
-  const [loading, setLoading] = useState(false);
-  const [edit, setEdit] = useState(false);
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+
   const titleRef = useRef("");
   const descriptionRef = useRef("");
   const dueDateRef = useRef("");
   const completeRef = useRef("");
 
-  const [task, setTask] = useState({
-    id: 1,
-    userId: 1,
-    title: "Deploy a website",
-    description: "Deploy a website on a server, AWS, or Netlify.",
-    complete: false,
-    dueDate: "2024-03-30",
-    createdDate: "2024-03-20",
-  });
-
-  function getStatusClass(complete, dueDate) {
-    const status = getStatus(complete, dueDate);
-    switch (status) {
-      case "COMPLETED":
-        return "text-green-500";
-      case "IN_PROGRESS":
-        return "text-yellow-500";
-      case "TODO":
-        return "text-red-500";
-      default:
-        return "";
-    }
-  }
-
-  function getStatus(complete, dueDate) {
-    if (complete === true) {
-      return "COMPLETED";
-    } else if (complete === false) {
-      if (new Date(dueDate) > new Date()) {
-        return "IN_PROGRESS";
-      } else {
-        return "TODO";
-      }
-    } else {
-      return "TODO";
-    }
-  }
-
-  const mutation = useMutation(
-    (updated) => axios.put(`${BASE_URL}/tasks/${task.id}`, updated),
-    {
-      onSuccess: (data) => {
-        toast.success("Task updated successfully");
-        queryClient.invalidateQueries("tasks");
-        setEdit(false);
-        setTask(data?.data);
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    }
-  );
-
-  const updateTask = (title, description, dueDate, complete) => {
-    if (!title || !description || !dueDate) {
-      toast.error("Please fill in all the fields");
-      return;
-    }
-    mutation.mutate({
-      title,
-      dueDate,
-      description,
-      complete: complete ? true : false,
-    });
-  };
+  const {
+    edit,
+    task,
+    setEdit,
+    loading,
+    navigate,
+    setLoading,
+    updateTodo,
+    getStatus,
+    getStatusClass,
+  } = useContext(ActionsContext);
 
   useEffect(() => {
-    setEdit(false);
-    setLoading(false);
-
+    if (edit) setEdit(false);
+    if (loading) setLoading(false);
     return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-between mt-30">
+        <RiseLoader color={"rgba(160, 160, 160, 0.5)"} size={8} />
+      </div>
+    );
   }
 
   return (
@@ -212,7 +156,7 @@ function Todo() {
                 <button
                   disabled={loading}
                   onClick={() =>
-                    updateTask(
+                    updateTodo(
                       titleRef.current["value"],
                       descriptionRef.current["value"],
                       dueDateRef.current["value"],
@@ -229,17 +173,6 @@ function Todo() {
         </div>
       </div>
       {/* )} */}
-      <ToastContainer
-        position="bottom-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </div>
   );
 }

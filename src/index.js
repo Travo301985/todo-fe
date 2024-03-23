@@ -7,6 +7,7 @@ import Auth0ProviderWithHistory from "./Auth0/Auth0Provider";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Loading from "./pages/components/Loading.js";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ActionsContextProvider } from "./context/ActionsContext.js";
 
 const Login = lazy(() => import("./pages/Login.js"));
 const Dashboard = lazy(() => import("./pages/Dashboard.js"));
@@ -21,48 +22,50 @@ ReactDOM.render(
     <React.StrictMode>
       <Auth0ProviderWithHistory>
         <QueryClientProvider client={queryClient}>
-          <Routes>
-            <Route
-              path="/login"
-              element={
-                <Suspense fallback={<Loading />}>
-                  <Login />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/register"
-              element={
-                <Suspense fallback={<Loading />}>
-                  <Register />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/"
-              element={
-                <Suspense fallback={<Loading />}>
-                  <Dashboard />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/todo/:id"
-              element={
-                <Suspense fallback={<Loading />}>
-                  <Todo />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/create-todo"
-              element={
-                <Suspense fallback={<Loading />}>
-                  <CreateTodo />
-                </Suspense>
-              }
-            />
-          </Routes>
+          <ActionsContextProvider>
+            <Routes>
+              <Route
+                path="/login"
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Login />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/register"
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Register />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Dashboard />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/todo/:id"
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <Todo />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/create-todo"
+                element={
+                  <Suspense fallback={<Loading />}>
+                    <CreateTodo />
+                  </Suspense>
+                }
+              />
+            </Routes>
+          </ActionsContextProvider>
         </QueryClientProvider>
       </Auth0ProviderWithHistory>
     </React.StrictMode>

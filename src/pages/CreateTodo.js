@@ -1,46 +1,26 @@
-import React, { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useEffect, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation, useQueryClient } from "react-query";
-import axios from "axios";
-import { BASE_URL } from "../constants/base";
-import { toast, ToastContainer } from "react-toastify";
+import { ActionsContext } from "../context/ActionsContext";
 
 function CreateTodo() {
   // eslint-disable-next-line no-unused-vars
   const { isLoading, isAuthenticated, logout, user } = useAuth0();
-  const navigate = useNavigate();
   const titleRef = useRef("");
   const descriptionRef = useRef("");
   const dueDateRef = useRef("");
 
-  const queryClient = useQueryClient();
+  const {
+    loading,
+    navigate,
+    setLoading,
+    createTodo,
+  } = useContext(ActionsContext);
 
-  const mutation = useMutation(
-    (newUser) => axios.post(`${BASE_URL}/tasks`, newUser),
-    {
-      onSuccess: () => {
-        toast.success("Task created successfully");
-        queryClient.invalidateQueries("users");
-        return navigate("/");
-      },
-      onError: (error) => {
-        toast.error(error);
-      },
-    }
-  );
-
-  const createTask = (title, description, dueDate) => {
-    if (!title || !description || !dueDate) {
-      return toast.error("Please fill in all the fields");
-    }
-    mutation.mutate({
-      title,
-      email: user?.email || "trevor",
-      dueDate,
-      description
-    });
-  };
+  useEffect(() => {
+    if (loading) setLoading(false);
+    return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -112,7 +92,13 @@ function CreateTodo() {
                 />
               </p>
               <button
-                onClick={() => createTask(titleRef.current.value, descriptionRef.current.value, dueDateRef.current.value)}
+                onClick={() =>
+                  createTodo(
+                    titleRef.current.value,
+                    descriptionRef.current.value,
+                    dueDateRef.current.value
+                  )
+                }
                 className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
               >
                 Submit
@@ -122,17 +108,6 @@ function CreateTodo() {
         </div>
       </div>
       {/* )} */}
-      <ToastContainer
-        position="bottom-left"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </div>
   );
 }
