@@ -163,10 +163,10 @@ export const ActionsContextProvider = ({ children }) => {
     {
       onMutate: () => setLoading(true),
       onSettled: () => setLoading(false),
-      onSuccess: (response) => {
+      onSuccess: (response, user) => {
         console.log(response);
         toast.success("Login successfully");
-        window.sessionStorage.setItem("user", JSON.stringify(response.data));
+        window.sessionStorage.setItem("user", JSON.stringify(user));
         queryClient.invalidateQueries("login");
         return navigate("/");
       },
