@@ -21,11 +21,8 @@ function Todo() {
     task,
     setEdit,
     loading,
-    navigate,
     setLoading,
     updateTodo,
-    getStatus,
-    getStatusClass,
   } = useContext(ActionsContext);
 
   useEffect(() => {
