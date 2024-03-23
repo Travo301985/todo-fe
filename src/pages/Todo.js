@@ -5,6 +5,7 @@ import { ActionsContext } from "../context/ActionsContext";
 import RiseLoader from "react-spinners/RiseLoader";
 import { withAccessHandler } from "../hocs/_withAuthHandler";
 import Navbar from "../constants/Navbar";
+import TaskCardId from "../constants/TaskCardId";
 
 function Todo() {
   // eslint-disable-next-line no-unused-vars
@@ -59,45 +60,12 @@ function Todo() {
       <div>
         <Navbar />
         <div>
-          <h3 className="text-0.5xl font-bold mb-4">User Tasks</h3>
+          <h3 className="flex justify-between text-0.5xl font-bold mb-4">
+            User Task
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {
-              <div className="border rounded p-4">
-                <h2 className="text-xl font-bold mb-2">{task?.title}</h2>
-                <hr className="mb-3" />
-                <p className="mb-2">{task?.description}</p>
-                <p className={"mb-2"}>
-                  Status:{" "}
-                  <span
-                    className={`${getStatusClass(
-                      task?.complete,
-                      task?.dueDate
-                    )}`}
-                  >
-                    {getStatus(task?.complete, task?.dueDate)}
-                  </span>
-                </p>
-                <p className="mb-2">Due Date: {task?.dueDate}</p>
-                <p className="mb-2">Created Date: {task?.createdDate}</p>
-                <div className="flex justify-between">
-                  <button
-                    onClick={() => navigate(`/`)}
-                    className="mt-2 px-4 py-0.5 bg-red-500 text-white rounded"
-                  >
-                    Delete
-                  </button>
-                  {!edit && (
-                    <button
-                      onClick={() => setEdit(true)}
-                      className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
-                    >
-                      Edit
-                    </button>
-                  )}
-                </div>
-              </div>
-            }
-            {!edit && (
+            {<TaskCardId task={task} />}
+            {edit && (
               <div className="border rounded p-4">
                 <label className="block">Title</label>
 
@@ -125,7 +93,7 @@ function Todo() {
                   className="border border-gray-300 w-full rounded mb-2 px-1"
                   type="date"
                   name="due"
-                  defaultChecked={task?.dueDate}
+                  defaultValue={task?.dueDate}
                   ref={dueDateRef}
                 />
 
@@ -138,20 +106,26 @@ function Todo() {
                     ref={completeRef}
                   />
                 </div>
-                <button
-                  disabled={loading}
-                  onClick={() =>
-                    updateTodo(
-                      titleRef.current["value"],
-                      descriptionRef.current["value"],
-                      dueDateRef.current["value"],
-                      completeRef.current["value"]
-                    )
-                  }
-                  className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
-                >
-                  {!loading ? "Create" : <BeatLoader color="white" size={6} />}
-                </button>
+                <div className="flex justify-center">
+                  <button
+                    disabled={loading}
+                    onClick={() =>
+                      updateTodo(
+                        titleRef.current["value"],
+                        descriptionRef.current["value"],
+                        dueDateRef.current["value"],
+                        completeRef.current["value"]
+                      )
+                    }
+                    className="mt-2 px-4 py-0.5 w-1/2 bg-blue-600 text-white rounded"
+                  >
+                    {!loading ? (
+                      "Update"
+                    ) : (
+                      <BeatLoader color="white" size={6} />
+                    )}
+                  </button>
+                </div>
               </div>
             )}
           </div>
