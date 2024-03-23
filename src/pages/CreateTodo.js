@@ -12,8 +12,7 @@ function CreateTodo() {
   const descriptionRef = useRef("");
   const dueDateRef = useRef("");
 
-  const { loading, setLoading, createTodo } =
-    useContext(ActionsContext);
+  const { loading, setLoading, createTodo } = useContext(ActionsContext);
 
   useEffect(() => {
     if (loading) setLoading(false);
@@ -42,7 +41,9 @@ function CreateTodo() {
       <div>
         <Navbar />
         <div>
-          <h3 className="text-0.5xl font-bold mb-4">Create Tasks</h3>
+          <h3 className="flex justify-between text-0.5xl font-bold mb-4">
+            Create Task
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="border rounded p-4">
               <p className="mb-2">
@@ -72,19 +73,21 @@ function CreateTodo() {
                   ref={dueDateRef}
                 />
               </p>
-              <button
-                disabled={loading}
-                onClick={() =>
-                  createTodo(
-                    titleRef.current.value,
-                    descriptionRef.current.value,
-                    dueDateRef.current.value
-                  )
-                }
-                className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
-              >
-                {!loading ? "Submit" : <BeatLoader color="white" size={6} />}
-              </button>
+              <div className="flex justify-center">
+                <button
+                  disabled={loading}
+                  onClick={() =>
+                    createTodo(
+                      titleRef.current.value,
+                      descriptionRef.current.value,
+                      dueDateRef.current.value
+                    )
+                  }
+                  className="mt-2 w-1/2 px-4 py-0.5 bg-blue-600 text-white rounded"
+                >
+                  {!loading ? "Submit" : <BeatLoader color="white" size={6} />}
+                </button>
+              </div>
             </div>
           </div>
         </div>
