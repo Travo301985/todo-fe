@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import RiseLoader from "react-spinners/RiseLoader";
 import { ActionsContext } from "../context/ActionsContext";
 import { withAccessHandler } from "../hocs/_withAuthHandler";
+import Navbar from "../constants/Navbar";
 
 function Dashboard() {
   // eslint-disable-next-line no-unused-vars
@@ -48,26 +49,8 @@ function Dashboard() {
       )}
       {isAuthenticated && ( */}
       <div>
-        <div className="flex justify-end">
-          <button
-            className="flex justify-center w-30 px-4 py-1 m-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none"
-            onClick={() =>
-              // logout({ logoutParams: { returnTo: window.location.origin } })
-              navigate("/login")
-            }
-          >
-            Log Out
-          </button>
-        </div>
+        <Navbar />
         <div>
-          <div>
-            <img src={user?.picture} alt={user?.name} />
-            <h2 className="text-center font-bold-500 text-xl">
-              Email:{" "}
-              {user?.email ||
-                JSON.parse(window.sessionStorage.getItem("user"))?.email}
-            </h2>
-          </div>
           <h3 className="flex justify-between text-0.5xl font-bold mb-4">
             User Tasks{" "}
             <button

@@ -1,8 +1,10 @@
+import { BeatLoader } from "react-spinners";
 import React, { useContext, useEffect, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { ActionsContext } from "../context/ActionsContext";
 import RiseLoader from "react-spinners/RiseLoader";
 import { withAccessHandler } from "../hocs/_withAuthHandler";
+import Navbar from "../constants/Navbar";
 
 function Todo() {
   // eslint-disable-next-line no-unused-vars
@@ -55,26 +57,8 @@ function Todo() {
       )}
       {isAuthenticated && ( */}
       <div>
-        <div className="flex justify-end">
-          <button
-            className="flex justify-center w-30 px-4 py-1 m-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none"
-            onClick={() =>
-              // logout({ logoutParams: { returnTo: window.location.origin } })
-              navigate("/login")
-            }
-          >
-            Log Out
-          </button>
-        </div>
+        <Navbar />
         <div>
-          <div>
-            <img src={user?.picture} alt={user?.name} />
-            <h2 className="text-center font-bold-500 text-xl">
-              Email:{" "}
-              {user?.email ||
-                JSON.parse(window.sessionStorage.getItem("user"))?.email}
-            </h2>
-          </div>
           <h3 className="text-0.5xl font-bold mb-4">User Tasks</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {
@@ -166,7 +150,7 @@ function Todo() {
                   }
                   className="mt-2 px-4 py-0.5 bg-blue-500 text-white rounded"
                 >
-                  Save
+                  {!loading ? "Create" : <BeatLoader color="white" size={6} />}
                 </button>
               </div>
             )}

@@ -166,7 +166,9 @@ export const ActionsContextProvider = ({ children }) => {
       onSuccess: (response) => {
         console.log(response);
         toast.success("Login successfully");
+        window.sessionStorage.setItem("user", JSON.stringify(response.data));
         queryClient.invalidateQueries("login");
+        return navigate("/");
       },
       onError: (error) => {
         toast.error(error.message);
