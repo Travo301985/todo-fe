@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { ActionsContext } from "../context/ActionsContext";
 import RiseLoader from "react-spinners/RiseLoader";
+import { withAccessHandler } from "../hocs/_withAuthHandler";
 
 function Todo() {
   // eslint-disable-next-line no-unused-vars
@@ -177,4 +178,4 @@ function Todo() {
   );
 }
 
-export default Todo;
+export default withAccessHandler(Todo);

@@ -74,6 +74,7 @@ export const ActionsContextProvider = ({ children }) => {
 
   const queryClient = useQueryClient();
 
+  // API calls using react query
   const mutation_fetchUserTodos = useMutation(
     (email) => axios.get(`${BASE_URL}/tasks/${email}`),
     {
@@ -210,6 +211,7 @@ export const ActionsContextProvider = ({ children }) => {
     });
   };
 
+  // Other Functions
   function getStatusClass(complete, dueDate) {
     const status = getStatus(complete, dueDate);
     switch (status) {

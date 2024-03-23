@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { useAuth0 } from "@auth0/auth0-react";
 import { ActionsContext } from "../context/ActionsContext";
+import { withAccessHandler } from "../hocs/_withAuthHandler";
 
 function Login() {
   const [passVisibility, setPassVisibility] = useState(false);
@@ -91,4 +92,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default withAccessHandler(Login);

@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import RiseLoader from "react-spinners/RiseLoader";
 import { ActionsContext } from "../context/ActionsContext";
+import { withAccessHandler } from "../hocs/_withAuthHandler";
 
 function Dashboard() {
   // eslint-disable-next-line no-unused-vars
@@ -120,4 +121,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default withAccessHandler(Dashboard);
