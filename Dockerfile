@@ -8,11 +8,11 @@ COPY build /usr/share/nginx/html
 COPY /etc/letsencrypt/live/todolistact.art/privkey.pem /etc/nginx/conf.d/privkey.pem
 COPY /etc/letsencrypt/live/todolistact.art/fullchain.pem /etc/nginx/conf.d/fullchain.pem
 
-# Copy Nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 # Add volumes
 VOLUME /etc/nginx/certs
+
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose ports
 EXPOSE 80
