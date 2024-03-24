@@ -1,20 +1,11 @@
-# Use the official Node.js  LTS (Long Term Support) image as a base
-FROM node:14-alpine
+# Use a base image with a web server to serve the static files
+FROM nginx:alpine
 
-# Set the working directory in the container
-WORKDIR /app/fe
+# Copy the built frontend files to the default Nginx public directory
+COPY build /usr/share/nginx/html
 
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
+# Expose the default Nginx port
+EXPOSE 80
 
-# Install dependencies
-RUN npm install
-
-# Copy the entire app to the working directory
-COPY . .
-
-# Expose port 3000 to the outside world
-EXPOSE 3000
-
-# Command to run the application
-CMD ["npm", "start"]
+# Start the Nginx server
+CMD ["nginx", "-g", "daemon off;"]
