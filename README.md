@@ -58,12 +58,8 @@
 
 ### Use Higher-Order Component (HOC):
 
-    - Create a Higher-Order Component that adds additional functionality or behavior to the existing components. This can be used for tasks such as authentication, data fetching, or handling certain aspects of the application's logic.
+    - Created a Higher-Order Component that adds additional functionality or behavior to the existing components. This can be used for tasks such as authentication, data fetching, or handling certain aspects of the application's logic.
 
 ### Write Jest tests for the dashboard:
 
-    - Use the Jest testing framework to write tests for the dashboard component of the Todo List Application. Write unit tests that cover different scenarios and ensure the component behaves as expected.
-
-### Add more features and functionality:
-
-    - Extend the Todo List Application by adding features like task filtering, sorting, reminders, deadlines, user authentication with Auth0, data persistence with a backend server or database, and any other functionality that aligns with the application's requirements.
+    - Used the Jest testing framework to write tests for the dashboard component of the Todo List Application. Wrote unit tests that cover different scenarios and ensure the component behaves as expected.
