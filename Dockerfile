@@ -11,6 +11,9 @@ COPY /etc/letsencrypt/live/todolistact.art/fullchain.pem /etc/nginx/conf.d/fullc
 # Copy Nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+# Add volumes
+VOLUME /etc/nginx/certs
+
 # Expose ports
 EXPOSE 80
 EXPOSE 443
