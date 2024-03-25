@@ -87,7 +87,7 @@ export const ActionsContextProvider = ({ children }) => {
         queryClient.invalidateQueries("tasks");
       },
       onError: (error) => {
-        toast.error(error.message);
+        toast.error(error?.response?.data?.error || error.message);
       },
     }
   );
@@ -110,7 +110,7 @@ export const ActionsContextProvider = ({ children }) => {
         queryClient.invalidateQueries("tasks");
       },
       onError: (error) => {
-        toast.error(error.message);
+        toast.error(error?.response?.data?.error || error.message);
       },
     }
   );
@@ -140,7 +140,7 @@ export const ActionsContextProvider = ({ children }) => {
         toast.success("Todo updated successfully");
       },
       onError: (error) => {
-        toast.error(error.message);
+        toast.error(error?.response?.data?.error || error.message);
       },
     }
   );
@@ -173,7 +173,7 @@ export const ActionsContextProvider = ({ children }) => {
         return navigate("/");
       },
       onError: (error) => {
-        toast.error(error.message);
+        toast.error(error?.response?.data?.error || error.message);
       },
     }
   );
@@ -199,7 +199,7 @@ export const ActionsContextProvider = ({ children }) => {
         queryClient.invalidateQueries("register");
       },
       onError: (error) => {
-        toast.error(error.message);
+        toast.error(error?.response?.data?.error || error.message);
       },
     }
   );
