@@ -1,7 +1,7 @@
 import { BeatLoader } from "react-spinners";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import { ActionsContext } from "../context/ActionsContext";
 import { withAccessHandler } from "../hocs/_withAuthHandler";
 
@@ -12,7 +12,7 @@ function Register() {
   const emailRef = useRef();
   const passwordRef = useRef();
 
-  const { loginWithRedirect } = useAuth0();
+  // const { loginWithRedirect } = useAuth0();
 
   const { loading, setLoading, registerUser } = useContext(ActionsContext);
 
@@ -85,7 +85,7 @@ function Register() {
           </button>
           <p className="text-center mb-2">or</p>
           <button
-            onClick={loginWithRedirect}
+            // onClick={loginWithRedirect}
             className="w-full px-4 py-1 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none"
           >
             Login with Auth0

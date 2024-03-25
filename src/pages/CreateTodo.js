@@ -1,5 +1,5 @@
 import { BeatLoader } from "react-spinners";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import { ActionsContext } from "../context/ActionsContext";
 import React, { useContext, useEffect, useRef } from "react";
 import { withAccessHandler } from "../hocs/_withAuthHandler";
@@ -7,22 +7,25 @@ import Navbar from "../constants/Navbar";
 
 function CreateTodo() {
   // eslint-disable-next-line no-unused-vars
-  const { isLoading, isAuthenticated, logout, user } = useAuth0();
+  // const { isLoading, isAuthenticated, logout, user } = useAuth0();
   const titleRef = useRef("");
   const descriptionRef = useRef("");
   const dueDateRef = useRef("");
 
-  const { loading, setLoading, createTodo } = useContext(ActionsContext);
+  const { loading, setLoading, createTodo, navigate } = useContext(ActionsContext);
 
   useEffect(() => {
+    if (!window.sessionStorage.getItem("user")) {
+      return navigate("/login")
+    }
     if (loading) setLoading(false);
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <div className="px-10">

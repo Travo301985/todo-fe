@@ -1,44 +1,41 @@
 import { BeatLoader } from "react-spinners";
 import React, { useContext, useEffect, useRef } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import { ActionsContext } from "../context/ActionsContext";
-import RiseLoader from "react-spinners/RiseLoader";
+// import RiseLoader from "react-spinners/RiseLoader";
 import { withAccessHandler } from "../hocs/_withAuthHandler";
 import Navbar from "../constants/Navbar";
 import TaskCardId from "../constants/TaskCardId";
 
 function Todo() {
   // eslint-disable-next-line no-unused-vars
-  const { isLoading, isAuthenticated, logout, user } = useAuth0();
+  // const { isLoading, isAuthenticated, logout, user } = useAuth0();
 
   const titleRef = useRef("");
   const descriptionRef = useRef("");
   const dueDateRef = useRef("");
   const completeRef = useRef("");
 
-  const {
-    edit,
-    task,
-    setEdit,
-    loading,
-    setLoading,
-    updateTodo,
-  } = useContext(ActionsContext);
+  const { edit, task, setEdit, loading, setLoading, updateTodo, navigate } =
+    useContext(ActionsContext);
 
   useEffect(() => {
+    if (!window.sessionStorage.getItem("user")) {
+      return navigate("/login");
+    }
     if (edit) setEdit(false);
     if (loading) setLoading(false);
     return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-between mt-30">
-        <RiseLoader color={"rgba(160, 160, 160, 0.5)"} size={8} />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-between mt-30">
+  //       <RiseLoader color={"rgba(160, 160, 160, 0.5)"} size={8} />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="px-10">

@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../constants/base";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -13,6 +13,7 @@ export const ActionsContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
+
   const [tasks, setTasks] = useState([
     {
       id: 1,
@@ -60,6 +61,7 @@ export const ActionsContextProvider = ({ children }) => {
       createdDate: "2024-03-19",
     },
   ]);
+
   const [task, setTask] = useState({
     id: 5,
     userId: 2,
@@ -70,7 +72,7 @@ export const ActionsContextProvider = ({ children }) => {
     createdDate: "2024-03-19",
   });
 
-  const { user } = useAuth0();
+  // const { user } = useAuth0();
 
   const queryClient = useQueryClient();
 
@@ -119,7 +121,7 @@ export const ActionsContextProvider = ({ children }) => {
     }
     mutation_createTodo.mutate({
       title,
-      email: user?.email || "trevor",
+      email: JSON.parse(window.sessionStorage.getItem("user"))?.username,
       dueDate,
       description,
     });

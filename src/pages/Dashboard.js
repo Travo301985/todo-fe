@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import RiseLoader from "react-spinners/RiseLoader";
 import { ActionsContext } from "../context/ActionsContext";
 import { withAccessHandler } from "../hocs/_withAuthHandler";
@@ -8,7 +8,7 @@ import TaskCard from "../constants/TaskCard";
 
 function Dashboard() {
   // eslint-disable-next-line no-unused-vars
-  const { isLoading, isAuthenticated, logout, user } = useAuth0();
+  // const { isLoading, isAuthenticated, logout, user } = useAuth0();
 
   const {
     tasks,
@@ -25,13 +25,17 @@ function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-between mt-30">
-        <RiseLoader color={"rgba(160, 160, 160, 0.5)"} size={8} />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-between mt-30">
+  //       <RiseLoader color={"rgba(160, 160, 160, 0.5)"} size={8} />
+  //     </div>
+  //   );
+  // }
+
+   if (!window.sessionStorage.getItem("user")) {
+      return navigate("/login")
+    }
 
   return (
     <div className="px-10">

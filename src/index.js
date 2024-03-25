@@ -3,7 +3,7 @@ import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import "react-toastify/dist/ReactToastify.css";
-import Auth0ProviderWithHistory from "./Auth0/Auth0Provider";
+// import Auth0ProviderWithHistory from "./Auth0/Auth0Provider";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Loading from "./pages/components/Loading.js";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -20,7 +20,7 @@ const queryClient = new QueryClient();
 ReactDOM.render(
   <Router>
     <React.StrictMode>
-      <Auth0ProviderWithHistory>
+      {/* <Auth0ProviderWithHistory> */}
         <QueryClientProvider client={queryClient}>
           <ActionsContextProvider>
             <Routes>
@@ -67,7 +67,7 @@ ReactDOM.render(
             </Routes>
           </ActionsContextProvider>
         </QueryClientProvider>
-      </Auth0ProviderWithHistory>
+      {/* </Auth0ProviderWithHistory> */}
     </React.StrictMode>
   </Router>,
   document.getElementById("root")
