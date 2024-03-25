@@ -189,14 +189,14 @@ export const ActionsContextProvider = ({ children }) => {
   };
 
   const mutation_registerUser = useMutation(
-    (user) => axios.post(`${BASE_URL}/register`, user),
+    (user) => axios.post(`${BASE_URL}/users`, user),
     {
       onMutate: () => setLoading(true),
       onSettled: () => setLoading(false),
       onSuccess: (response) => {
         console.log(response);
         toast.success("Registration successfully");
-        queryClient.invalidateQueries("register");
+        queryClient.invalidateQueries("users");
       },
       onError: (error) => {
         toast.error(error?.response?.data?.error || error.message);
