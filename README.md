@@ -63,3 +63,52 @@
 ### Write Jest tests for the dashboard:
 
     - Used the Jest testing framework to write tests for the dashboard component of the Todo List Application. Wrote unit tests that cover different scenarios and ensure the component behaves as expected.
+
+## Deployment Setup
+
+### Digital Oceans Deployment
+* Droplet username: root, password: FR#5^dJzLbaw
+* Hostname: ubuntu-todo-list
+* IP address: 134.209.229.54, 172.18.0.2
+
+### Docker Setup
+* `sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io`
+* `sudo docker network create mynetwork` - c6d55077fe3c37d5e00aaf0552cbb8051ef7f80e985cd675b5b469d410bb981c
+
+### Postgres databse container setup
+* `sudo docker pull postgres`
+* `sudo docker run -d --name postgres-container --net=mynetwork -e POSTGRES_PASSWORD=Password_123 -p 5432:5432 postgres` - 92253661b1d2ded09c52c8730b3739282b69bedaae4b91b2be9a7e39ae9378ea
+* `sudo docker logs postgres-container`
+* `sudo apt install postgresql-client-common`
+* `sudo apt install postgresql-client
+* `psql -h 134.209.229.54 -p 5432 -U postgres` -- Password: Password_123
+#### Creating the database
+* `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' postgres-container`
+* `CREATE DATABASE todo;`
+* `\l`
+* `\c todo` - then create the tables
+* `\dt`
+
+### Node.JS backend setup
+* `cd .. && cd home && git clone https://github.com/Travo301985/todo-be.git && cd todo-be`
+* `docker build -t todo-be-image .` - from the Dockerfile
+* `docker run -d -p 4000:4000 --name todo-be-container todo-be-image`
+
+### React.JS backend setup
+* `cd .. && cd home && git clone https://github.com/Travo301985/todo-fe.git && cd todo-fe`
+* `docker build -t todo-fe-image .` - from the Dockerfile
+* `docker run -d -p 3000:80 --name todo-fe-container todo-fe-image`
+
+### SSL configuration
+* `sudo apt install snapd`
+* `sudo snap install --classic certbot`
+* `apt install nginx`
+* `sudo certbot --nginx`
+* acquring a domain name
+* `docker exec -it todo-fe-container /bin/sh` and `vi /etc/nginx/nginx.conf` to edit the nginx.config file
+* proxy the default server nginx to the docker container
+
