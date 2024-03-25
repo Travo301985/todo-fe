@@ -209,7 +209,7 @@ export const ActionsContextProvider = ({ children }) => {
       return toast.error("Please fill in all the fields");
     }
     mutation_registerUser.mutate({
-      username: name,
+      name: name,
       email: email,
       password: password,
     });
